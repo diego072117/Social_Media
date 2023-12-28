@@ -1,5 +1,5 @@
-export const SigninForm = () =>{
-    return(
-        <>soy el formulario</>
+export const SigninForm = () => {
+    return (
+        <>Logueate</>
     )
 }
