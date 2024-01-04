@@ -190,3 +190,73 @@ export async function deleteFile(fileId: string) {
     }
 
 }
+
+export async function getRecentPosts() {
+    const post = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.postCollectionId,
+        [Query.orderDesc('$createdAt'), Query.limit(20)]
+    )
+
+    if (!post) throw Error
+
+    return post
+}
+
+export async function likePost(postId: string, likesArray: string[]) {
+    try {
+        const updatePost = await databases.updateDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.postCollectionId,
+            postId,
+            {
+                likes: likesArray
+            }
+        )
+
+        if (!updatePost) throw Error
+
+        return updatePost
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
+export async function savePost(userId: string, postId: string) {
+    try {
+        const updatePost = await databases.createDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.savesCollectionId,
+            ID.unique(),
+            {
+                user: userId,
+                post: postId
+            }
+        )
+
+        if (!updatePost) throw Error
+
+        return updatePost
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
+export async function deleteSavedPost(savedRecordId: string) {
+    try {
+        const statusCode = await databases.deleteDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.savesCollectionId,
+            savedRecordId
+        )
+
+        if (!statusCode) throw Error
+
+        return { status: 'ok' }
+    } catch (error) {
+        console.log(error);
+
+    }
+} 
